@@ -53,4 +53,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: mpv-android
-          path: app/src/main/libs/*
+          path: app/src/main/libs
