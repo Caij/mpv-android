@@ -45,6 +45,11 @@ static void sendEventToJava(JNIEnv *env, int event)
     env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_event, event);
 }
 
+static void sendEndEventToJava(JNIEnv *env, int reason, int error)
+{
+    env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_endEvent, reason, error);
+}
+
 static void sendLogMessageToJava(JNIEnv *env, mpv_event_log_message *msg)
 {
     // filter the most obvious cases of invalid utf-8, since Java would choke on it
@@ -79,6 +84,7 @@ void *event_thread(void *arg)
         mpv_event *mp_event;
         mpv_event_property *mp_property = NULL;
         mpv_event_log_message *msg = NULL;
+        mpv_event_end_file *info = NULL;
 
         mp_event = mpv_wait_event(g_mpv, -1.0);
 
@@ -89,18 +95,22 @@ void *event_thread(void *arg)
             continue;
 
         switch (mp_event->event_id) {
-        case MPV_EVENT_LOG_MESSAGE:
-            msg = (mpv_event_log_message*)mp_event->data;
-            ALOGV("[%s:%s] %s", msg->prefix, msg->level, msg->text);
-            sendLogMessageToJava(env, msg);
-            break;
-        case MPV_EVENT_PROPERTY_CHANGE:
-            mp_property = (mpv_event_property*)mp_event->data;
-            sendPropertyUpdateToJava(env, mp_property);
-            break;
-        default:
-            ALOGV("event: %s\n", mpv_event_name(mp_event->event_id));
-            sendEventToJava(env, mp_event->event_id);
+            case MPV_EVENT_LOG_MESSAGE:
+                msg = (mpv_event_log_message*)mp_event->data;
+                ALOGV("[%s:%s] %s", msg->prefix, msg->level, msg->text);
+                sendLogMessageToJava(env, msg);
+                break;
+            case MPV_EVENT_PROPERTY_CHANGE:
+                mp_property = (mpv_event_property*)mp_event->data;
+                sendPropertyUpdateToJava(env, mp_property);
+                break;
+            case MPV_EVENT_END_FILE:
+                info = (mpv_event_end_file*)mp_event->data;
+                sendEndEventToJava(env, info->reason, info->error);
+                break;
+            default:
+                ALOGV("event: %s %d\n", mpv_event_name(mp_event->event_id), mp_event->error);
+                sendEventToJava(env, mp_event->event_id);
             break;
         }
     }
