@@ -8,7 +8,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
-import `is`.xyz.mpv.MPVLib.MpvFormat.MPV_FORMAT_DOUBLE
+import mvp.android.MPVLib
+import mvp.android.MPVLib.MpvFormat.MPV_FORMAT_DOUBLE
 import `is`.xyz.mpv.MPVLib.MpvFormat.MPV_FORMAT_FLAG
 import `is`.xyz.mpv.MPVLib.MpvFormat.MPV_FORMAT_INT64
 import `is`.xyz.mpv.MPVLib.MpvFormat.MPV_FORMAT_NONE

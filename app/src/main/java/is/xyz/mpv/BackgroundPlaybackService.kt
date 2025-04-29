@@ -18,7 +18,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.PendingIntentCompat
 import androidx.core.app.ServiceCompat
 import androidx.media.app.NotificationCompat.MediaStyle
-import `is`.xyz.mpv.MPVLib.MpvEvent
+import mvp.android.MPVLib
 
 /*
     All this service does is
@@ -166,6 +166,10 @@ class BackgroundPlaybackService : Service(), MPVLib.EventObserver {
     override fun event(eventId: Int) {
         if (eventId == MpvEvent.MPV_EVENT_SHUTDOWN)
             stopSelf()
+    }
+
+    override fun endEvent(reason: Int, error: Int) {
+
     }
 
 

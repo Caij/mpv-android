@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import mvp.android.MPVLib
 
 // Contains only the essential code needed to get a picture on the screen
 
