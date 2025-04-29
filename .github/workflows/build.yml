@@ -41,15 +41,27 @@ jobs:
 #        run: |
 #          buildscripts/include/ci.sh build
 
-      - name: Build
+      - name: Download
         run: |
           cd buildscripts
           git config --global url."https://github.com/freetype/freetype.git".insteadOf "https://gitlab.freedesktop.org/freetype/freetype.git"
           ./download.sh
+
+      - name: Build armv7a
+        run: |
           ./buildall.sh
+
+      - name: Build armv64
+        run: |
           ./buildall.sh --arch arm64
+
+      - name: Build x86
+        run: |
           ./buildall.sh --arch x86
-          ./buildall.sh --arch x86_64
+
+      - name: Build x86
+        run: |
+          ./buildall.sh --arch x86_64           
 
       - uses: actions/upload-artifact@v4
         with:
