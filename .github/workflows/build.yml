@@ -44,6 +44,7 @@ jobs:
       - name: Build
         run: |
           cd buildscripts
+          git config --global url."https://github.com/freetype/freetype.git".insteadOf "https://gitlab.freedesktop.org/freetype/freetype.git"
           ./download.sh
           ./buildall.sh
           ./buildall.sh --arch arm64
