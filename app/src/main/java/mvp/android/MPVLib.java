@@ -1,4 +1,4 @@
-package is.xyz.mpv;
+package mvp.android;
 
 // Wrapper for native library
 
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
@@ -82,6 +83,7 @@ public class MPVLib {
      }
 
      public static void eventProperty(String property) {
+          Log.i("MPVLib", "eventProperty(" + property + ")");
           synchronized (observers) {
                for (EventObserver o : observers)
                     o.eventProperty(property);
@@ -89,10 +91,18 @@ public class MPVLib {
      }
 
      public static void event(int eventId) {
+          Log.i("MPVLib", "event(" + eventId + ")");
           synchronized (observers) {
                for (EventObserver o : observers)
                     o.event(eventId);
           }
+     }
+
+     public static void endEvent(int reason, int error) {
+        synchronized (observers) {
+             for (EventObserver o : observers)
+                  o.endEvent(reason, error);
+        }
      }
 
      private static final List<LogObserver> log_observers = new ArrayList<>();
@@ -118,6 +128,8 @@ public class MPVLib {
           void eventProperty(@NonNull String property, @NonNull String value);
           void eventProperty(@NonNull String property, double value);
           void event(int eventId);
+
+          void endEvent(int reason, int error);
      }
 
      public interface LogObserver {
@@ -168,5 +180,40 @@ public class MPVLib {
           public static final int MPV_LOG_LEVEL_V=50;
           public static final int MPV_LOG_LEVEL_DEBUG=60;
           public static final int MPV_LOG_LEVEL_TRACE=70;
+     }
+
+     public static class MpvEndFileReason {
+          /**
+           * The end of file was reached. Sometimes this may also happen on
+           * incomplete or corrupted files, or if the network connection was
+           * interrupted when playing a remote file. It also happens if the
+           * playback range was restricted with --end or --frames or similar.
+           */
+          public static final int MPV_END_FILE_REASON_EOF = 0;
+          /**
+           * Playback was stopped by an external action (e.g. playlist controls).
+           */
+          public static final int MPV_END_FILE_REASON_STOP = 2;
+          /**
+           * Playback was stopped by the quit command or player shutdown.
+           */
+          public static final int MPV_END_FILE_REASON_QUIT = 3;
+          /**
+           * Some kind of error happened that lead to playback abort. Does not
+           * necessarily happen on incomplete or broken files (in these cases, both
+           * MPV_END_FILE_REASON_ERROR or MPV_END_FILE_REASON_EOF are possible).
+           *
+           * mpv_event_end_file.error will be set.
+           */
+          public static final int MPV_END_FILE_REASON_ERROR = 4;
+          /**
+           * The file was a playlist or similar. When the playlist is read, its
+           * entries will be appended to the playlist after the entry of the current
+           * file, the entry of the current file is removed, and a MPV_EVENT_END_FILE
+           * event is sent with reason set to MPV_END_FILE_REASON_REDIRECT. Then
+           * playback continues with the playlist contents.
+           * Since API version 1.18.
+           */
+          public static final int MPV_END_FILE_REASON_REDIRECT = 5;
      }
 }

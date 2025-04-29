@@ -8,7 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import `is`.xyz.mpv.BuildConfig
-import `is`.xyz.mpv.MPVLib
+import mvp.android.MPVLib
 import `is`.xyz.mpv.R
 import `is`.xyz.mpv.databinding.ActivityAboutBinding
 
