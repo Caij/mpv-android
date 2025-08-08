@@ -90,4 +90,11 @@ fi
 #
 #exit 0
 
+msg "build armv7a"
+./buildall.sh
+msg "build arm64"
 ./buildall.sh --arch arm64
+msg "build x86"
+./buildall.sh --arch x86
+msg "build x86_64"
+./buildall.sh --arch x86_64
