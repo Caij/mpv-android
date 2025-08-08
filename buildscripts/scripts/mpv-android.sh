@@ -39,38 +39,38 @@ fi
 PREFIX32=$prefix32 PREFIX64=$prefix64 PREFIX_X64=$prefix_x64 PREFIX_X86=$prefix_x86 \
 ndk-build -C app/src/main -j$cores
 
-targets=(assembleRelease)
-if [ -z "$DONT_BUILD_RELEASE" ]; then
-	[ -n "$BUNDLE" ] && targets+=(bundleRelease)
-fi
-./gradlew "${targets[@]}"
-
-if [ -n "$ANDROID_SIGNING_KEY" ]; then
-	cd "${MPV_ANDROID}/app/build/outputs/apk"
-	apksigner=${ANDROID_HOME}/build-tools/${v_sdk_build_tools}/apksigner
-	for v in default api29; do
-		pushd $v
-		# sign the universal debug APK
-		"$apksigner" sign --ks "${ANDROID_SIGNING_KEY}" \
-			--in debug/app-$v-universal-debug.apk --out debug/app-$v-universal-debug-signed.apk
-		# but all of the release APKs
-		for apk in release/*-unsigned.apk; do
-			"$apksigner" sign --ks "${ANDROID_SIGNING_KEY}" \
-				--in $apk --out ${apk/-unsigned/-signed}
-		done
-		popd
-	done
-	# and the bundle
-	cd ../bundle
-	if [ -n "$BUNDLE" ]; then
-		if [ -z "$ANDROID_SIGNING_ALIAS" ]; then
-			echo >&2 "Error: ANDROID_SIGNING_ALIAS must be set to use jarsigner"
-			exit 1
-		fi
-		pushd defaultRelease
-		jarsigner -keystore "${ANDROID_SIGNING_KEY}" -signedjar \
-			app-default-release-signed.aab app-default-release.aab \
-			"${ANDROID_SIGNING_ALIAS}"
-		popd
-	fi
-fi
+#targets=(assembleRelease)
+#if [ -z "$DONT_BUILD_RELEASE" ]; then
+#	[ -n "$BUNDLE" ] && targets+=(bundleRelease)
+#fi
+#./gradlew "${targets[@]}"
+#
+#if [ -n "$ANDROID_SIGNING_KEY" ]; then
+#	cd "${MPV_ANDROID}/app/build/outputs/apk"
+#	apksigner=${ANDROID_HOME}/build-tools/${v_sdk_build_tools}/apksigner
+#	for v in default api29; do
+#		pushd $v
+#		# sign the universal debug APK
+#		"$apksigner" sign --ks "${ANDROID_SIGNING_KEY}" \
+#			--in debug/app-$v-universal-debug.apk --out debug/app-$v-universal-debug-signed.apk
+#		# but all of the release APKs
+#		for apk in release/*-unsigned.apk; do
+#			"$apksigner" sign --ks "${ANDROID_SIGNING_KEY}" \
+#				--in $apk --out ${apk/-unsigned/-signed}
+#		done
+#		popd
+#	done
+#	# and the bundle
+#	cd ../bundle
+#	if [ -n "$BUNDLE" ]; then
+#		if [ -z "$ANDROID_SIGNING_ALIAS" ]; then
+#			echo >&2 "Error: ANDROID_SIGNING_ALIAS must be set to use jarsigner"
+#			exit 1
+#		fi
+#		pushd defaultRelease
+#		jarsigner -keystore "${ANDROID_SIGNING_KEY}" -signedjar \
+#			app-default-release-signed.aab app-default-release.aab \
+#			"${ANDROID_SIGNING_ALIAS}"
+#		popd
+#	fi
+#fi
