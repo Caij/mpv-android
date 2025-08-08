@@ -73,7 +73,6 @@ args=(
   --disable-protocol=rtp
 
   --disable-swscale
-  --disable-postproc
 	--disable-filters
 )
 ../configure "${args[@]}"
