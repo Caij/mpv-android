@@ -38,9 +38,43 @@ args=(
 	# - devices: no practical use on Android
 	--disable-{muxers,encoders,devices}
 	# useful to taking screenshots
-	--enable-encoder=mjpeg,png
+#	--enable-encoder=mjpeg,png
 	# useful for the `dump-cache` command
-	--enable-muxer=mov,matroska,mpegts
+#	--enable-muxer=mov,matroska,mpegts
+
+	--disable-decoder=h264
+  --disable-decoder=hevc
+  --disable-decoder=vp8
+  --disable-decoder=vp9
+  --disable-decoder=mpeg4
+  --disable-decoder=mjpeg
+  --disable-decoder=theora
+
+  --disable-encoder=h264
+  --disable-encoder=mpeg4
+  --disable-encoder=vp8
+
+  --disable-parser=h264
+  --disable-parser=hevc
+  --disable-parser=mpeg4video
+
+  --disable-demuxer=matroska
+  --disable-demuxer=mpegts
+  --disable-demuxer=mov
+  --disable-demuxer=avi
+  --disable-demuxer=flv
+  --disable-demuxer=hls
+
+  --disable-protocol=hls
+  --disable-protocol=pipe
+  --disable-protocol=rtmp*
+  --disable-protocol=rtmp
+  --disable-protocol=rtmpt
+  --disable-protocol=rtp
+
+  --disable-swscale
+  --disable-postproc
+	--disable-filters
 )
 ../configure "${args[@]}"
 
