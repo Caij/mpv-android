@@ -14,59 +14,60 @@ jobs:
           java-version: '18'
           distribution: temurin
 
-#      - name: Export env vars
-#        run: buildscripts/include/ci.sh export >>$GITHUB_ENV
-#
-#      - uses: actions/cache@v4
-#        with:
-#          path: gh-cache/
-#          key: "${{ env.CACHE_IDENTIFIER }}"
-#          enableCrossOsArchive: true
-#
+      - name: Export env vars
+        run: buildscripts/include/ci.sh export >>$GITHUB_ENV
+
+      - uses: actions/cache@v4
+        with:
+          path: gh-cache/
+          key: "${{ env.CACHE_IDENTIFIER }}"
+          enableCrossOsArchive: true
+
       - name: Install deps
         run: |
           sudo apt-get update
           sudo apt-get install nasm
           sudo apt-get install autoconf pkg-config libtool ninja-build python3-pip
           sudo pip3 install meson
-
-#      - name: Download deps
-#        run: |
-#          mkdir -p "$CACHE_FOLDER"
-#          buildscripts/include/ci.sh install
-#        env:
-#          CACHE_MODE: "folder"
-#          CACHE_FOLDER: "${{ github.workspace }}/gh-cache"
-
-#      - name: Build
-#        run: |
-#          buildscripts/include/ci.sh build
-
-      - name: Download
-        run: |
-          cd buildscripts
           git config --global url."https://github.com/freetype/freetype.git".insteadOf "https://gitlab.freedesktop.org/freetype/freetype.git"
-          ./download.sh
 
-      - name: Build armv7a
+      - name: Download deps
         run: |
-          cd buildscripts
-          ./buildall.sh
+          mkdir -p "$CACHE_FOLDER"
+          buildscripts/include/ci.sh install
+        env:
+          CACHE_MODE: "folder"
+          CACHE_FOLDER: "${{ github.workspace }}/gh-cache"
 
-      - name: Build armv64
+      - name: Build
         run: |
-          cd buildscripts
-          ./buildall.sh --arch arm64
+          buildscripts/include/ci.sh build
 
-      - name: Build x86
-        run: |
-          cd buildscripts
-          ./buildall.sh --arch x86
-
-      - name: Build x86
-        run: |
-          cd buildscripts
-          ./buildall.sh --arch x86_64           
+#      - name: Download
+#        run: |
+#          cd buildscripts
+#          git config --global url."https://github.com/freetype/freetype.git".insteadOf "https://gitlab.freedesktop.org/freetype/freetype.git"
+#          ./download.sh
+#
+#      - name: Build armv7a
+#        run: |
+#          cd buildscripts
+#          ./buildall.sh
+#
+#      - name: Build armv64
+#        run: |
+#          cd buildscripts
+#          ./buildall.sh --arch arm64
+#
+#      - name: Build x86
+#        run: |
+#          cd buildscripts
+#          ./buildall.sh --arch x86
+#
+#      - name: Build x86
+#        run: |
+#          cd buildscripts
+#          ./buildall.sh --arch x86_64
 
       - uses: actions/upload-artifact@v4
         with:
