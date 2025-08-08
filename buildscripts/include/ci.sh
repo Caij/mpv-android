@@ -78,23 +78,24 @@ else
 	exit 1
 fi
 
-#msg "Building mpv"
-#./buildall.sh -n mpv || {
-#	# show logfile if configure failed
-#	[ ! -f deps/mpv/_build/config.h ] && cat deps/mpv/_build/meson-logs/meson-log.txt
-#	exit 1
-#}
+msg "Building mpv"
+./buildall.sh -n mpv || {
+	# show logfile if configure failed
+	[ ! -f deps/mpv/_build/config.h ] && cat deps/mpv/_build/meson-logs/meson-log.txt
+	exit 1
+}
 #
 #msg "Building mpv-android"
 #./buildall.sh -n
 #
 #exit 0
 
-msg "build armv7a"
-./buildall.sh
-msg "build arm64"
-./buildall.sh --arch arm64
-msg "build x86"
-./buildall.sh --arch x86
-msg "build x86_64"
-./buildall.sh --arch x86_64
+#msg "build armv7a"
+#./buildall.sh
+#msg "build arm64"
+#./buildall.sh --arch arm64
+#msg "build x86"
+#./buildall.sh --arch x86
+#msg "build x86_64"
+#./buildall.sh --arch x86_64
+#exit 0
