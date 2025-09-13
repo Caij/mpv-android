@@ -98,12 +98,13 @@ static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
         jvalue = env->NewStringUTF(*(const char**)prop->data);
         env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SS, jprop, jvalue);
         break;
-    case MPV_FORMAT_NODE:
+    case MPV_FORMAT_NODE:{
         mpv_node *node = *(mpv_node**)prop->data;
         jobject jobj = convert_node_to_java_object(env, node);
         env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SN, jprop, jobj);
         env->DeleteLocalRef(jobj);
         break;
+    }
     default:
         ALOGV("sendPropertyUpdateToJava: Unknown property update format received in callback: %d!", prop->format);
         break;
