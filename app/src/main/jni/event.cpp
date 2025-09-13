@@ -26,7 +26,7 @@ static jobject convert_node_to_java_object(JNIEnv *env, mpv_node *node) {
         case MPV_FORMAT_DOUBLE: {
             jclass doubleClass = env->FindClass("java/lang/Double");
             jmethodID method = env->GetStaticMethodID(doubleClass, "valueOf", "(D)Ljava/lang/Double;");
-            return env->CallStaticObjectMethod(doubleClass, method, (jdouble)node->u.d);
+            return env->CallStaticObjectMethod(doubleClass, method, (jdouble)node->u.double_);
         }
         case MPV_FORMAT_NODE_MAP: {
             jclass mapClass = env->FindClass("java/util/HashMap");
@@ -105,7 +105,7 @@ static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
         env->DeleteLocalRef(jobj);
         break;
     default:
-        ALOGV("sendPropertyUpdateToJava: Unknown property update format received in callback: %s %d!", jprop, prop->format);
+        ALOGV("sendPropertyUpdateToJava: Unknown property update format received in callback: %d!", prop->format);
         break;
     }
     if (jprop)
