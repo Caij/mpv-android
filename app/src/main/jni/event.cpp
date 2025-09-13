@@ -8,7 +8,10 @@
 
 // 辅助函数，递归地将 mpv_node 转换为 Java 对象
 static jobject convert_node_to_java_object(JNIEnv *env, mpv_node *node) {
-    if (!node) return NULL;
+    if (!node) {
+        ALOGV("node is null: return null");
+        return NULL;
+    }
 
     switch (node->format) {
         case MPV_FORMAT_STRING:
@@ -99,7 +102,7 @@ static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
         env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SS, jprop, jvalue);
         break;
     case MPV_FORMAT_NODE:{
-        mpv_node *node = *(mpv_node**)prop->data;
+        mpv_node *node = (mpv_node*)prop->data;
         jobject jobj = convert_node_to_java_object(env, node);
         if (jobj) {
             env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SN, jprop, jobj);
