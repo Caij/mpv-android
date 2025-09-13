@@ -82,6 +82,13 @@ public class MPVLib {
           }
      }
 
+     public static void eventNodeProperty(String property, Object value) {
+          synchronized (observers) {
+               for (EventObserver o : observers)
+                    o.eventNodeProperty(property, value);
+          }
+     }
+
      public static void eventProperty(String property) {
           Log.i("MPVLib", "eventProperty(" + property + ")");
           synchronized (observers) {
@@ -127,6 +134,9 @@ public class MPVLib {
           void eventProperty(@NonNull String property, boolean value);
           void eventProperty(@NonNull String property, @NonNull String value);
           void eventProperty(@NonNull String property, double value);
+
+          void eventNodeProperty(@NonNull String property, @NonNull Object value);
+
           void event(int eventId);
 
           void endEvent(int reason, int error);

@@ -6,6 +6,74 @@
 #include "jni_utils.h"
 #include "log.h"
 
+// 辅助函数，递归地将 mpv_node 转换为 Java 对象
+static jobject convert_node_to_java_object(JNIEnv *env, mpv_node *node) {
+    if (!node) return NULL;
+
+    switch (node->format) {
+        case MPV_FORMAT_STRING:
+            return env->NewStringUTF(node->u.string);
+        case MPV_FORMAT_FLAG: {
+            jclass booleanClass = env->FindClass("java/lang/Boolean");
+            jmethodID method = env->GetStaticMethodID(booleanClass, "valueOf", "(Z)Ljava/lang/Boolean;");
+            return env->CallStaticObjectMethod(booleanClass, method, (jboolean)(node->u.flag != 0));
+        }
+        case MPV_FORMAT_INT64: {
+            jclass longClass = env->FindClass("java/lang/Long");
+            jmethodID method = env->GetStaticMethodID(longClass, "valueOf", "(J)Ljava/lang/Long;");
+            return env->CallStaticObjectMethod(longClass, method, (jlong)node->u.int64);
+        }
+        case MPV_FORMAT_DOUBLE: {
+            jclass doubleClass = env->FindClass("java/lang/Double");
+            jmethodID method = env->GetStaticMethodID(doubleClass, "valueOf", "(D)Ljava/lang/Double;");
+            return env->CallStaticObjectMethod(doubleClass, method, (jdouble)node->u.d);
+        }
+        case MPV_FORMAT_NODE_MAP: {
+            jclass mapClass = env->FindClass("java/util/HashMap");
+            jmethodID mapConstructor = env->GetMethodID(mapClass, "<init>", "()V");
+            jobject mapObj = env->NewObject(mapClass, mapConstructor);
+            jmethodID putMethod = env->GetMethodID(mapClass, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+
+            mpv_node_list *list = node->u.list;
+            for (int i = 0; i < list->num; i++) {
+                jstring key = env->NewStringUTF(list->keys[i]);
+                jobject value = convert_node_to_java_object(env, &list->values[i]);
+                if (value) {
+                    env->CallObjectMethod(mapObj, putMethod, key, value);
+                    env->DeleteLocalRef(value);
+                }
+                env->DeleteLocalRef(key);
+            }
+            return mapObj;
+        }
+        case MPV_FORMAT_NODE_ARRAY: {
+            jclass listClass = env->FindClass("java/util/ArrayList");
+            jmethodID listConstructor = env->GetMethodID(listClass, "<init>", "()V");
+            jobject listObj = env->NewObject(listClass, listConstructor);
+            jmethodID addMethod = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+            mpv_node_list *list = node->u.list;
+            for (int i = 0; i < list->num; i++) {
+                jobject element = convert_node_to_java_object(env, &list->values[i]);
+                if (element) {
+                    env->CallBooleanMethod(listObj, addMethod, element);
+                    env->DeleteLocalRef(element);
+                }
+            }
+            return listObj;
+        }
+        case MPV_FORMAT_BYTE_ARRAY: {
+            mpv_byte_array *b = node->u.ba;
+            if (!b) return NULL;
+            jbyteArray byteArray = env->NewByteArray(b->size);
+            env->SetByteArrayRegion(byteArray, 0, b->size, (const jbyte*)b->data);
+            return byteArray;
+        }
+        default:
+            return NULL;
+    }
+}
+
 static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
 {
     jstring jprop = env->NewStringUTF(prop->name);
@@ -30,8 +98,14 @@ static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
         jvalue = env->NewStringUTF(*(const char**)prop->data);
         env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SS, jprop, jvalue);
         break;
+    case MPV_FORMAT_NODE:
+        mpv_node *node = *(mpv_node**)prop->data;
+        jobject jobj = convert_node_to_java_object(env, node);
+        env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SN, jprop, jobj);
+        env->DeleteLocalRef(jobj);
+        break;
     default:
-        ALOGV("sendPropertyUpdateToJava: Unknown property update format received in callback: %d!", prop->format);
+        ALOGV("sendPropertyUpdateToJava: Unknown property update format received in callback: %s %d!", jprop, prop->format);
         break;
     }
     if (jprop)
@@ -39,6 +113,7 @@ static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
     if (jvalue)
         env->DeleteLocalRef(jvalue);
 }
+
 
 static void sendEventToJava(JNIEnv *env, int event)
 {
