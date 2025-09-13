@@ -156,6 +156,9 @@ class BackgroundPlaybackService : Service(), MPVLib.EventObserver {
     override fun eventProperty(property: String, value: Long) { }
 
     override fun eventProperty(property: String, value: Double) { }
+    override fun eventNodeProperty(property: String, value: Any) {
+
+    }
 
     override fun eventProperty(property: String, value: String) {
         if (!cachedMetadata.update(property, value))
