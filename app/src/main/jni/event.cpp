@@ -105,7 +105,7 @@ static void sendPropertyUpdateToJava(JNIEnv *env, mpv_event_property *prop)
             env->CallStaticVoidMethod(mpv_MPVLib, mpv_MPVLib_eventProperty_SN, jprop, jobj);
             env->DeleteLocalRef(jobj);
         } else {
-            ALOGV("sendPropertyUpdateToJava: MPV_FORMAT_NODE value null: %s %d !", jprop, node->format);
+            ALOGV("sendPropertyUpdateToJava: MPV_FORMAT_NODE value null: %s %d !", prop->name, node->format);
         }
         break;
     }
