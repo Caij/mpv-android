@@ -67,8 +67,8 @@ jobs:
 #          cd buildscripts
 #          ./buildall.sh --arch x86_64
 #
-#      - uses: actions/upload-artifact@v4
-#        with:
-#          name: mpv-android
-#          path: |
-#            app/src/main/libs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mpv-android
+          path: |
+            app/src/main/libs
