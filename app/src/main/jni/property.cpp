@@ -106,7 +106,7 @@ jni_func(void, setPropertyDouble, jstring jproperty, jdouble jvalue) {
 
 jni_func(void, setPropertyBoolean, jstring jproperty, jboolean jvalue) {
     int value = jvalue == JNI_TRUE ? 1 : 0;
-    ALOGE("mpv_set_property(%s, %d)", jproperty, value);
+    ALOGE("mpv_set_property(%d)", value);
     common_set_property(env, jproperty, MPV_FORMAT_FLAG, &value);
 }
 
