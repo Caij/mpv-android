@@ -57,7 +57,6 @@ static int common_set_property(JNIEnv *env, jstring jproperty, mpv_format format
 
     const char *prop = env->GetStringUTFChars(jproperty, NULL);
     int result = mpv_set_property(g_mpv, prop, format, value);
-    ALOGE("mpv_set_property(%s, %p)", prop, value);
     if (result < 0)
         ALOGE("mpv_set_property(%s, %p) format %d returned error %s", prop, value, format, mpv_error_string(result));
     env->ReleaseStringUTFChars(jproperty, prop);
@@ -107,6 +106,7 @@ jni_func(void, setPropertyDouble, jstring jproperty, jdouble jvalue) {
 
 jni_func(void, setPropertyBoolean, jstring jproperty, jboolean jvalue) {
     int value = jvalue == JNI_TRUE ? 1 : 0;
+    ALOGE("mpv_set_property(%s, %d)", prop, value);
     common_set_property(env, jproperty, MPV_FORMAT_FLAG, &value);
 }
 
