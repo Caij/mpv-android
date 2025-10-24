@@ -48,7 +48,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
-import mvp.android.MPVLib
 import java.io.File
 import java.lang.IllegalArgumentException
 import kotlin.math.roundToInt
@@ -1018,7 +1017,8 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             "content" -> translateContentUri(data)
             // mpv supports data URIs but needs data:// to pass it through correctly
             "data" -> "data://${data.schemeSpecificPart}"
-            "http", "https", "rtmp", "rtmps", "rtp", "rtsp", "mms", "mmst", "mmsh", "tcp", "udp", "lavf"
+            "http", "https", "rtmp", "rtmps", "rtp", "rtsp", "mms", "mmst", "mmsh",
+            "tcp", "udp", "lavf", "ftp"
             -> data.toString()
             else -> null
         }
@@ -1888,10 +1888,6 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         eventUiHandler.post { eventPropertyUi(property, value) }
     }
 
-    override fun eventNodeProperty(property: String, value: Any) {
-
-    }
-
     override fun eventProperty(property: String, value: String) {
         val metaUpdated = psc.update(property, value)
         if (metaUpdated)
@@ -1917,10 +1913,6 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
 
         if (!activityIsForeground) return
         eventUiHandler.post { eventUi(eventId) }
-    }
-
-    override fun endEvent(reason: Int, error: Int) {
-
     }
 
     // Gesture handler

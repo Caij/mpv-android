@@ -174,7 +174,7 @@ loadarch $arch
 setup_prefix
 build $target
 
-#[ "$target" == "mpv-android" ] && \
-#	ls -lh ../app/build/outputs/apk/{default,api29}/*/*.apk
+[ "$target" == "mpv-android" ] && \
+	ls -lh ../app/build/outputs/apk/{default,api29}/*/*.apk
 
 exit 0

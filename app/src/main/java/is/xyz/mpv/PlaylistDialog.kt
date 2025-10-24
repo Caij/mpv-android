@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import mvp.android.MPVLib
 
 internal class PlaylistDialog(private val player: MPVView) {
     private lateinit var binding: DialogPlaylistBinding
