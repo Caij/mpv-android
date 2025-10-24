@@ -38,9 +38,52 @@ args=(
 	# - devices: no practical use on Android
 	--disable-{muxers,encoders,devices}
 	# useful to taking screenshots
-	--enable-encoder=mjpeg,png
+#	--enable-encoder=mjpeg,png
 	# useful for the `dump-cache` command
-	--enable-muxer=mov,matroska,mpegts
+#	--enable-muxer=mov,matroska,mpegts
+
+#	 禁用所有已知的视频解码器
+  --disable-decoder=h264
+  --disable-decoder=hevc
+  --disable-decoder=vp8
+  --disable-decoder=vp9
+  --disable-decoder=av1
+  --disable-decoder=mpeg4
+  --disable-decoder=mpeg2video
+  --disable-decoder=mjpeg
+  --disable-decoder=theora
+  --disable-decoder=vc1
+  --disable-decoder=wmv3
+
+  # 禁用所有已知的视频解析器
+  --disable-parser=h264
+  --disable-parser=hevc
+  --disable-parser=mpeg4video
+  --disable-parser=mpeg2video
+  --disable-parser=vp8
+  --disable-parser=vp9
+  --disable-parser=av1
+  --disable-parser=vc1
+
+  # 禁用纯视频的解复用器，保留对mkv/mov等音频容器的支持
+  --disable-demuxer=mpegts
+  --disable-demuxer=avi
+  --disable-demuxer=flv
+  --disable-demuxer=hls
+
+  # 禁用流媒体协议
+  --disable-protocol=hls
+  --disable-protocol=pipe
+  --disable-protocol=rtmp*
+  --disable-protocol=rtmp
+  --disable-protocol=rtmpt
+  --disable-protocol=rtp
+  --disable-protocol=udp
+  --disable-protocol=mmsh
+  --disable-protocol=mmst
+
+#  --disable-swscale
+	--disable-filters
 )
 ../configure "${args[@]}"
 

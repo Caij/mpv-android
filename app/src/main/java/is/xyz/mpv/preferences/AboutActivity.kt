@@ -8,8 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import `is`.xyz.mpv.BuildConfig
-import `is`.xyz.mpv.MPVLib
-import `is`.xyz.mpv.MPVLib.MpvLogLevel
+import mvp.android.MPVLib
 import `is`.xyz.mpv.R
 import `is`.xyz.mpv.databinding.ActivityAboutBinding
 
@@ -60,7 +59,7 @@ class AboutActivity : AppCompatActivity(), MPVLib.LogObserver {
     override fun logMessage(prefix: String, level: Int, text: String) {
         if (prefix != "cplayer")
             return
-        if (level == MpvLogLevel.MPV_LOG_LEVEL_V)
+        if (level == MPVLib.mpvLogLevel.MPV_LOG_LEVEL_V)
             logs += text
 
         if (text.startsWith("List of enabled features:", true)) {
