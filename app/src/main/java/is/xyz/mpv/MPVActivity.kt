@@ -1888,6 +1888,14 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         eventUiHandler.post { eventPropertyUi(property, value) }
     }
 
+    override fun eventNodeProperty(property: String, value: Any) {
+
+    }
+
+    override fun endEvent(reason: Int, error: Int) {
+
+    }
+
     override fun eventProperty(property: String, value: String) {
         val metaUpdated = psc.update(property, value)
         if (metaUpdated)

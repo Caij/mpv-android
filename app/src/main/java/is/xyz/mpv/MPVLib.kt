@@ -95,10 +95,28 @@ object MPVLib {
     }
 
     @JvmStatic
+    fun eventNodeProperty(property: String, value: Any) {
+          synchronized (observers) {
+               for ( o in observers) {
+                   o.eventNodeProperty(property, value)
+               }
+          }
+     }
+
+    @JvmStatic
     fun event(eventId: Int) {
         synchronized(observers) {
             for (o in observers)
                 o.event(eventId)
+        }
+    }
+
+    @JvmStatic
+    fun endEvent(reason: Int, error: Int) {
+        synchronized (observers) {
+            for (o in observers) {
+                o.endEvent(reason, error)
+            }
         }
     }
 
@@ -132,6 +150,8 @@ object MPVLib {
         fun eventProperty(property: String, value: Boolean)
         fun eventProperty(property: String, value: String)
         fun eventProperty(property: String, value: Double)
+        fun eventNodeProperty(property: String, value: Any)
+        fun endEvent(reason: Int, error: Int)
         fun event(eventId: Int)
     }
 
@@ -186,4 +206,66 @@ object MPVLib {
         const val MPV_LOG_LEVEL_DEBUG: Int = 60
         const val MPV_LOG_LEVEL_TRACE: Int = 70
     }
+
+    object MpvEndFileReason {
+          /**
+           * The end of file was reached. Sometimes this may also happen on
+           * incomplete or corrupted files, or if the network connection was
+           * interrupted when playing a remote file. It also happens if the
+           * playback range was restricted with --end or --frames or similar.
+           */
+         const val MPV_END_FILE_REASON_EOF = 0;
+          /**
+           * Playback was stopped by an external action (e.g. playlist controls).
+           */
+          const val MPV_END_FILE_REASON_STOP = 2;
+          /**
+           * Playback was stopped by the quit command or player shutdown.
+           */
+          const val MPV_END_FILE_REASON_QUIT = 3;
+          /**
+           * Some kind of error happened that lead to playback abort. Does not
+           * necessarily happen on incomplete or broken files (in these cases, both
+           * MPV_END_FILE_REASON_ERROR or MPV_END_FILE_REASON_EOF are possible).
+           *
+           * mpv_event_end_file.error will be set.
+           */
+          const val MPV_END_FILE_REASON_ERROR = 4;
+          /**
+           * The file was a playlist or similar. When the playlist is read, its
+           * entries will be appended to the playlist after the entry of the current
+           * file, the entry of the current file is removed, and a MPV_EVENT_END_FILE
+           * event is sent with reason set to MPV_END_FILE_REASON_REDIRECT. Then
+           * playback continues with the playlist contents.
+           * Since API version 1.18.
+           */
+          const val MPV_END_FILE_REASON_REDIRECT = 5;
+    }
+
+
+     object MpvError {
+          const val MPV_ERROR_SUCCESS = 0;         // 没有错误
+          const val MPV_ERROR_EVENT_QUEUE_FULL = -1;   // 事件队列满
+          const val MPV_ERROR_NOMEM = -2;              // 内存不足
+          const val MPV_ERROR_UNSUPPORTED = -3;        // 功能不支持
+          const val MPV_ERROR_INVALID_PARAMETER = -4;  // 参数无效
+          const val MPV_ERROR_OPTION_NOT_FOUND = -5;   // 找不到选项
+          const val MPV_ERROR_OPTION_FORMAT = -6;      // 选项格式错误
+          const val MPV_ERROR_OPTION_ERROR = -7;       // 设置选项失败
+          const val MPV_ERROR_PROPERTY_NOT_FOUND = -8; // 属性不存在
+          const val MPV_ERROR_PROPERTY_FORMAT = -9;    // 属性格式错误
+          const val MPV_ERROR_PROPERTY_UNAVAILABLE = -10; // 属性不可用
+          const val MPV_ERROR_PROPERTY_ERROR = -11;    // 获取/设置属性失败
+          const val MPV_ERROR_COMMAND = -12;           // 命令执行失败
+          const val MPV_ERROR_LOADING_FAILED = -13;    // 加载文件失败
+          const val MPV_ERROR_AO_INIT_FAILED = -14;    // 音频输出初始化失败
+          const val MPV_ERROR_VO_INIT_FAILED = -15;    // 视频输出初始化失败
+          const val MPV_ERROR_NOTHING_TO_PLAY = -16;   // 播放列表为空
+          const val MPV_ERROR_UNKNOWN_FORMAT = -17;    // 不支持的格式
+          const val MPV_ERROR_UNSUPPORTED_FORMAT = -18;// 文件格式不支持
+          const val MPV_ERROR_DEMUXER_ERROR = -19;     // 解复用失败
+          const val MPV_ERROR_EXIT = -20;           // 用户或脚本请求退出
+          const val MPV_ERROR_WAITING = -21;           // 阻塞等待
+          const val MPV_ERROR_GENERIC = -22;           // 通用错误
+     }
 }
