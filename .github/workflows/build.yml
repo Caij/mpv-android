@@ -47,25 +47,25 @@ jobs:
           git config --global url."https://github.com/freetype/freetype.git".insteadOf "https://gitlab.freedesktop.org/freetype/freetype.git"
           ./download.sh
 
-#      - name: Build armv7a
-#        run: |
-#          cd buildscripts
-#          ./buildall.sh
+      - name: Build armv7a
+        run: |
+          cd buildscripts
+          ./buildall.sh
 
       - name: Build armv64
         run: |
           cd buildscripts
           ./buildall.sh --arch arm64
 
-#      - name: Build x86
-#        run: |
-#          cd buildscripts
-#          ./buildall.sh --arch x86
-#
-#      - name: Build x86
-#        run: |
-#          cd buildscripts
-#          ./buildall.sh --arch x86_64
+      - name: Build x86
+        run: |
+          cd buildscripts
+          ./buildall.sh --arch x86
+
+      - name: Build x86
+        run: |
+          cd buildscripts
+          ./buildall.sh --arch x86_64
 #
       - uses: actions/upload-artifact@v4
         with:
