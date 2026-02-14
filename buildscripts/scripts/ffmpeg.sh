@@ -41,6 +41,70 @@ args=(
 	--enable-encoder=mjpeg,png
 	# useful for the `dump-cache` command
 	--enable-muxer=mov,matroska,mpegts
+
+  # 禁用流媒体协议
+  --disable-protocol=hls
+  --disable-protocol=pipe
+  --disable-protocol=rtmp*
+  --disable-protocol=rtmp
+  --disable-protocol=rtmpt
+  --disable-protocol=rtp
+  --disable-protocol=udp
+  --disable-protocol=mmsh
+  --disable-protocol=mmst
+
+  --disable-decoders
+  --enable-decoder=aac*
+  --enable-decoder=ac3*
+  --enable-decoder=adpcm*
+  --enable-decoder=alac*
+  --enable-decoder=amr*
+  --enable-decoder=ape
+  --enable-decoder=cook
+  --enable-decoder=dca
+  --enable-decoder=dolby_e
+  --enable-decoder=eac3*
+  --enable-decoder=flac
+  --enable-decoder=mp1*
+  --enable-decoder=mp2*
+  --enable-decoder=mp3*
+  --enable-decoder=opus
+  --enable-decoder=pcm*
+  --enable-decoder=sonic
+  --enable-decoder=truehd
+  --enable-decoder=tta
+  --enable-decoder=vorbis
+  --enable-decoder=wma*
+  --enable-decoder=dsd*
+  --enable-decoder=dca_ma
+
+  --disable-demuxers
+  --enable-demuxer=aac
+  --enable-demuxer=ac3
+  --enable-demuxer=aiff
+  --enable-demuxer=amr
+  --enable-demuxer=ape
+  --enable-demuxer=asf
+  --enable-demuxer=ass
+  --enable-demuxer=caf
+  --enable-demuxer=eac3
+  --enable-demuxer=flac
+  --enable-demuxer=loas
+  --enable-demuxer=matroska
+  --enable-demuxer=mov
+  --enable-demuxer=mp3
+  --enable-demuxer=mpeg*
+  --enable-demuxer=ogg
+  --enable-demuxer=srt
+  --enable-demuxer=vc1
+  --enable-demuxer=wav
+  --enable-demuxer=dsf
+  --enable-demuxer=dff
+  --enable-demuxer=aiff
+  --enable-demuxer=dts
+
+  --disable-filters
+  --disable-parsers
 )
 ../configure "${args[@]}"
 
