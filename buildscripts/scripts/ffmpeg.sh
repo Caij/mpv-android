@@ -114,6 +114,19 @@ args=(
   --disable-parser=vc1
 
   --disable-filters
+  --enable-filter=aformat
+  --enable-filter=amix
+  --enable-filter=anull
+  --enable-filter=aresample
+  --enable-filter=areverse
+  --enable-filter=asetrate
+  --enable-filter=atempo
+  --enable-filter=atrim
+  --enable-filter=equalizer
+  --enable-filter=firequalizer
+  --enable-filter=pan
+  --enable-filter=superequalizer
+  --enable-filter=volume
 )
 ../configure "${args[@]}"
 
