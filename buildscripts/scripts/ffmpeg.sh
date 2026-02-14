@@ -103,8 +103,17 @@ args=(
   --enable-demuxer=aiff
   --enable-demuxer=dts
 
+  # 禁用所有已知的视频解析器
+  --disable-parser=h264
+  --disable-parser=hevc
+  --disable-parser=mpeg4video
+  --disable-parser=mpeg2video
+  --disable-parser=vp8
+  --disable-parser=vp9
+  --disable-parser=av1
+  --disable-parser=vc1
+
   --disable-filters
-  --disable-parsers
 )
 ../configure "${args[@]}"
 
