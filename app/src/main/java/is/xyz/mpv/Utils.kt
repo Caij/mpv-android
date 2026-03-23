@@ -57,14 +57,52 @@ internal object Utils {
         return true
     }
 
+    /** Write the 'fonts.conf' for fontconfig. */
+    private fun writeFontsConf(context: Context, configFile: File) {
+        val parts = mutableListOf(
+            "<fontconfig>",
+            // Android system fonts reside here
+            "<dir>/system/fonts/</dir>",
+            "<dir>/product/fonts/</dir>",
+            // Point fontconfig to the right cache path so that caching works
+            "<cachedir>${context.cacheDir.path}</cachedir>",
+            // Conveniently there is *no* Java API to query the system default fonts, but we can
+            // manually specify the font families we know Android uses and provides by default.
+            // (compare to 60-latin.conf shipped with fontconfig)
+            "<alias><family>serif</family>",
+            "<prefer><family>Noto Serif</family></prefer>",
+            "</alias>",
+            "<alias><family>sans-serif</family>",
+            "<prefer>",
+            "<family>Roboto</family>",
+            "<family>Noto Sans</family>", // other languages
+            "</prefer>",
+            "</alias>",
+            "<alias><family>monospace</family>",
+            "<prefer><family>Droid Sans Mono</family></prefer>",
+            "</alias>",
+            "</fontconfig>"
+        )
+        try {
+            configFile.writeText(parts.joinToString("\n"))
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to write fonts.conf", e)
+        }
+    }
+
     fun copyAssets(context: Context) {
         val assetManager = context.assets
-        val files = arrayOf("subfont.ttf", "cacert.pem")
+        val files = arrayOf("cacert.pem")
         val configDir = context.filesDir.path
 
         for (name in files) {
             copyAssetFile(assetManager, name, File("$configDir/$name"))
         }
+
+        // we used to ship this, but it's no longer needed
+        File("$configDir/subfont.ttf").delete()
+
+        writeFontsConf(context, File("$configDir/fonts.conf"))
     }
 
     fun findRealPath(fd: Int): String? {
@@ -333,6 +371,12 @@ internal object Utils {
                 else -> return false
             }
             return true
+        }
+
+        /** reset playback data when a file ends */
+        fun eof() {
+            position = -1L
+            duration = 0L
         }
 
         private val mediaMetadataBuilder = MediaMetadataCompat.Builder()
