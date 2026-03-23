@@ -76,6 +76,8 @@ args=(
   --enable-decoder=vorbis
   --enable-decoder=wma*
   --enable-decoder=dsd*
+  # DFF may carry DST-compressed DSD streams, not only raw DSD.
+  --enable-decoder=dst
   --enable-decoder=dca_ma
 
   --disable-demuxers
