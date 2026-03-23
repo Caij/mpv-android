@@ -91,6 +91,7 @@ args=(
   --enable-demuxer=caf
   --enable-demuxer=eac3
   --enable-demuxer=flac
+  --enable-demuxer=iff
   --enable-demuxer=loas
   --enable-demuxer=matroska
   --enable-demuxer=mov
