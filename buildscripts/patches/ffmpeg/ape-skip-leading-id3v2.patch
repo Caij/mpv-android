@@ -1,0 +1,32 @@
+diff --git a/libavformat/ape.c b/libavformat/ape.c
+index 7f02f5c..3b62d27 100644
+--- a/libavformat/ape.c
++++ b/libavformat/ape.c
+@@ -27,6 +27,7 @@
+ #include "avformat.h"
+ #include "demux.h"
+ #include "internal.h"
++#include "id3v2.h"
+ #include "apetag.h"
+ 
+ /* The earliest and latest file formats supported by this library */
+@@ -145,6 +146,7 @@ static int ape_read_header(AVFormatContext *s)
+     APEContext *ape = s->priv_data;
+     AVStream *st;
+     uint32_t tag;
++    ID3v2ExtraMeta *extra_meta = NULL;
+     int i, ret;
+     int64_t total_blocks;
+     int64_t final_size = 0;
+@@ -152,6 +154,11 @@ static int ape_read_header(AVFormatContext *s)
+     int64_t pts, file_size;
+ 
+     /* Skip any leading junk such as id3v2 tags */
++    ff_id3v2_read(s, ID3v2_DEFAULT_MAGIC, &extra_meta, 0);
++    ff_id3v2_free_extra_meta(&extra_meta);
++    if (pb->eof_reached)
++        return AVERROR_EOF;
++
+     ape->junklength = avio_tell(pb);
+ 
+     tag = avio_rl32(pb);

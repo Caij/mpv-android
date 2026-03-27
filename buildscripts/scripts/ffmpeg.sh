@@ -11,6 +11,10 @@ else
 	exit 255
 fi
 
+if ! grep -q 'ff_id3v2_read(s, ID3v2_DEFAULT_MAGIC' libavformat/ape.c; then
+	patch -p1 < ../../patches/ffmpeg/ape-skip-leading-id3v2.patch
+fi
+
 mkdir -p _build$ndk_suffix
 cd _build$ndk_suffix
 
